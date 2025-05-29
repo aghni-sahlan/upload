@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Produk ke Bukaolshop</title>
+    <style>
+        /* CSS Styling */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 30px;
+            background-color: #e0f2f7; /* Light Blue Background */
+            color: #333;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top */
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+            width: 100%;
+            max-width: 600px;
+            box-sizing: border-box;
+            margin-top: 30px; /* Space from top */
+        }
+
+        h1 {
+            color: #007bff; /* Primary Blue */
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2.2em;
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #cce7e8; /* Light blue border */
+            border-radius: 8px;
+            box-sizing: border-box;
+            font-size: 1em;
+            color: #333;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        input[type="file"] {
+            display: block;
+            margin-top: 10px;
+            padding: 5px;
+            border: 1px solid #cce7e8;
+            border-radius: 8px;
+            background-color: #f0f8ff;
+        }
+
+        button {
+            background-color: #28a745; /* Success Green */
+            color: white;
+            padding: 15px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.1em;
+            font-weight: 600;
+            width: 100%;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
+        }
+
+        button:hover {
+            background-color: #218838; /* Darker Green */
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
+        }
+
+        #responseMessage {
+            margin-top: 25px;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            display: none; /* Hidden by default */
+        }
+
+        .success {
+            background-color: #d4edda; /* Light green */
+            color: #155724; /* Dark green */
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da; /* Light red */
+            color: #721c24; /* Dark red */
+            border: 1px solid #f5c6cb;
+        }
+
+        .loading {
+            background-color: #ffeeba; /* Light yellow */
+            color: #856404; /* Dark yellow */
+            border: 1px solid #ffeeba;
+        }
+
+        #tokenInputSection {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        #tokenInputSection input {
+            width: calc(100% - 22px);
+            max-width: 400px;
+            margin-bottom: 10px;
+        }
+
+        #tokenInputSection button {
+            max-width: 200px;
+            margin: auto;
+        }
+
+        #productFormSection {
+            display: none; /* Hidden by default, shown after token is valid */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Bukaolshop Product Uploader</h1>
+
+        <div id="tokenInputSection">
+            <h2>Masukkan API Token Anda</h2>
+            <div class="form-group">
+                <label for="apiToken">API Token Bukaolshop:</label>
+                <input type="text" id="apiToken" placeholder="Masukkan API Token Anda di sini" />
+                <small style="color: #666; font-size: 0.85em;">API Token Anda tidak akan disimpan di browser.</small>
+            </div>
+            <button id="verifyTokenBtn">Verifikasi & Lanjutkan</button>
+            <div id="responseMessageToken" class="responseMessage hidden"></div>
+        </div>
+
+        <div id="productFormSection">
+            <h2>Upload Produk Baru</h2>
+
+            <div class="form-group">
+                <label for="productName">Nama Produk:</label>
+                <input type="text" id="productName" placeholder="Contoh: Kemeja Batik Modern" required>
+            </div>
+
+            <div class="form-group">
+                <label for="productPrice">Harga Produk (Rp):</label>
+                <input type="number" id="productPrice" placeholder="Contoh: 150000" min="1" required>
+            </div>
+
+            <div class="form-group">
+                <label for="productCategory">Kategori Produk:</label>
+                <select id="productCategory" required disabled>
+                    <option value="">Memuat kategori...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="productDescription">Deskripsi Produk:</label>
+                <textarea id="productDescription" rows="5" placeholder="Tulis deskripsi lengkap produk Anda..." required></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="productImages">Gambar Produk (bisa lebih dari satu):</label>
+                <input type="file" id="productImages" accept="image/*" multiple required>
+            </div>
+
+            <button id="uploadProductBtn">Upload Produk Sekarang</button>
+            <div id="responseMessageUpload" class="responseMessage hidden"></div>
+        </div>
+    </div>
+
+    <script>
+        // JavaScript Logic
+        const API_BASE_URL = 'https://bukaolshop.com/api';
+
+        const tokenInputSection = document.getElementById('tokenInputSection');
+        const productFormSection = document.getElementById('productFormSection');
+        const apiTokenInput = document.getElementById('apiToken');
+        const verifyTokenBtn = document.getElementById('verifyTokenBtn');
+        const responseMessageTokenDiv = document.getElementById('responseMessageToken');
+
+        const productNameInput = document.getElementById('productName');
+        const productPriceInput = document.getElementById('productPrice');
+        const productCategorySelect = document.getElementById('productCategory');
+        const productDescriptionTextarea = document.getElementById('productDescription');
+        const productImagesInput = document.getElementById('productImages');
+        const uploadProductBtn = document.getElementById('uploadProductBtn');
+        const responseMessageUploadDiv = document.getElementById('responseMessageUpload');
+
+        let currentApiToken = ''; // Variabel untuk menyimpan token setelah diverifikasi
+
+        // Fungsi untuk menampilkan pesan respons
+        function showResponseMessage(element, message, type) {
+            element.textContent = message;
+            element.className = 'responseMessage'; // Reset classes
+            element.classList.add(type);
+            element.style.display = 'block';
+            setTimeout(() => {
+                element.style.display = 'none';
+            }, 5000); // Pesan akan hilang setelah 5 detik
+        }
+
+        // Fungsi untuk mengambil kategori produk dari API
+        async function fetchProductCategories() {
+            productCategorySelect.innerHTML = '<option value="">Memuat kategori...</option>';
+            productCategorySelect.disabled = true; // Nonaktifkan selama memuat
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/products/categories`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${currentApiToken}`
+                    }
+                });
+
+                const result = await response.json();
+
+                if (response.ok && result.data && Array.isArray(result.data)) {
+                    productCategorySelect.innerHTML = '<option value="">Pilih Kategori</option>'; // Reset
+                    result.data.forEach(category => {
+                        const option = document.createElement('option');
+                        option.value = category.category_id; // Asumsi API mengembalikan category_id
+                        option.textContent = category.category_name; // Asumsi API mengembalikan category_name
+                        productCategorySelect.appendChild(option);
+                    });
+                    productCategorySelect.disabled = false; // Aktifkan kembali
+                    return true; // Berhasil mengambil kategori
+                } else {
+                    const errorMessage = result.message || 'Gagal memuat kategori produk. Periksa API Token.';
+                    showResponseMessage(responseMessageTokenDiv, `Error: ${errorMessage}`, 'error');
+                    console.error('Failed to fetch categories:', result);
+                    return false; // Gagal mengambil kategori
+                }
+            } catch (error) {
+                console.error('Network error while fetching categories:', error);
+                showResponseMessage(responseMessageTokenDiv, 'Kesalahan jaringan saat memuat kategori. Pastikan token benar dan koneksi internet stabil.', 'error');
+                return false; // Gagal mengambil kategori
+            }
+        }
+
+        // Event listener untuk tombol Verifikasi Token
+        verifyTokenBtn.addEventListener('click', async () => {
+            const token = apiTokenInput.value.trim();
+            if (!token) {
+                showResponseMessage(responseMessageTokenDiv, 'Mohon masukkan API Token Anda.', 'error');
+                return;
+            }
+
+            currentApiToken = token; // Simpan token sementara
+
+            showResponseMessage(responseMessageTokenDiv, 'Memverifikasi token & memuat kategori...', 'loading');
+            verifyTokenBtn.disabled = true;
+
+            const categoriesLoaded = await fetchProductCategories();
+
+            if (categoriesLoaded) {
+                showResponseMessage(responseMessageTokenDiv, 'API Token berhasil diverifikasi dan kategori dimuat!', 'success');
+                tokenInputSection.style.display = 'none'; // Sembunyikan bagian token
+                productFormSection.style.display = 'block'; // Tampilkan bagian form upload
+            } else {
+                // Jika gagal, biarkan pesan error dari fetchProductCategories yang tampil
+                verifyTokenBtn.disabled = false;
+            }
+        });
+
+        // Event listener untuk tombol upload produk
+        uploadProductBtn.addEventListener('click', async () => {
+            const productName = productNameInput.value.trim();
+            const productPrice = productPriceInput.value;
+            const productCategory = productCategorySelect.value;
+            const productDescription = productDescriptionTextarea.value.trim();
+            const productImages = productImagesInput.files;
+
+            // Validasi input form produk
+            if (!productName || !productPrice || !productCategory || !productDescription || productImages.length === 0) {
+                showResponseMessage(responseMessageUploadDiv, 'Harap lengkapi semua bidang dan pilih setidaknya satu gambar produk.', 'error');
+                return;
+            }
+            if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
+                showResponseMessage(responseMessageUploadDiv, 'Harga produk harus angka positif.', 'error');
+                return;
+            }
+
+            showResponseMessage(responseMessageUploadDiv, 'Mengunggah produk...', 'loading');
+            uploadProductBtn.disabled = true;
+
+            const formData = new FormData();
+            formData.append('product_name', productName);
+            formData.append('product_price', parseFloat(productPrice));
+            formData.append('product_category', productCategory);
+            formData.append('product_description', productDescription);
+
+            for (let i = 0; i < productImages.length; i++) {
+                formData.append('product_image[]', productImages[i]);
+            }
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/products/upload`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${currentApiToken}`
+                    },
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    showResponseMessage(responseMessageUploadDiv, `Produk berhasil diunggah! ID Produk: ${result.data.product_id}`, 'success');
+                    // Bersihkan form setelah sukses
+                    productNameInput.value = '';
+                    productPriceInput.value = '';
+                    productCategorySelect.value = ''; // Reset kategori
+                    productDescriptionTextarea.value = '';
+                    productImagesInput.value = '';
+                } else {
+                    const errorMessage = result.message || 'Terjadi kesalahan saat mengunggah produk.';
+                    showResponseMessage(responseMessageUploadDiv, `Gagal mengunggah: ${errorMessage}`, 'error');
+                    console.error('Upload Error:', result);
+                }
+            } catch (error) {
+                console.error('Network error during upload:', error);
+                showResponseMessage(responseMessageUploadDiv, 'Terjadi kesalahan jaringan atau server tidak merespons.', 'error');
+            } finally {
+                uploadProductBtn.disabled = false;
+            }
+        });
+    </script>
+</body>
+</html>
