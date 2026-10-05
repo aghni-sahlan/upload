@@ -26,12 +26,12 @@ body{background-color:var(--bg-app);color:var(--text-dark);padding:20px 16px;use
 .form-control:focus{border-color:var(--primary)!important;box-shadow:none!important;background:#FFF}
 .form-control[readonly]{background:#E2E8F0!important;color:#475569!important;cursor:not-allowed}
 
-.upload-box-container{border:2px dashed var(--primary);background:#F5F3FA;border-radius:16px;padding:18px;text-align:center;position:relative;overflow:hidden;cursor:pointer}
+/* FIX TRIGGER UPLOAD BROWSER */
+.upload-btn-label{display:block;border:2px dashed var(--primary);background:#F5F3FA;border-radius:16px;padding:18px;text-align:center;cursor:pointer;margin-bottom:0}
 .upload-icon-circle{width:44px;height:44px;background:var(--primary);color:#FFF;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:6px;font-size:20px}
 .upload-title{font-size:11.5px;font-weight:700;color:var(--text-dark);display:block}
 .upload-subtitle{font-size:10px;color:var(--text-muted);display:block}
 .preview-img-box{max-width:130px;max-height:130px;border-radius:12px;object-fit:cover;margin-top:10px;border:1px solid #CBD5E1;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
-.native-file-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:10}
 
 .btn-submit{background:linear-gradient(135deg,#229ED9 0%,#0088cc 100%);color:#FFF;font-weight:800;font-size:12.5px;padding:12px;border-radius:14px;border:none;box-shadow:0 6px 18px rgba(0,136,204,0.25)}
 .btn-wa{background:#25D366;color:#FFF;font-weight:800;font-size:12.5px;padding:12px;border-radius:14px;border:none}
@@ -70,15 +70,16 @@ body{background-color:var(--bg-app);color:var(--text-dark);padding:20px 16px;use
 
     <div class="form-group mb-3">
       <label>Upload Foto Bukti Mutasi / Transfer</label>
-      <div class="upload-box-container">
-        <input type="file" id="fotoNativeInput" class="native-file-input" accept="image/*" required>
+      <!-- GUNAKAN INPUT HIDDEN DENGAN LABEL UNTUK MEMAKSA BROWSER BUKA GALERI/KAMERA -->
+      <input type="file" id="fotoNativeInput" accept="image/*" style="display:none!important">
+      <label for="fotoNativeInput" class="upload-btn-label">
         <div class="upload-icon-circle"><i class="bi bi-cloud-arrow-up-fill"></i></div>
         <span class="upload-title" id="uploadBoxTitle">Pilih Foto Bukti Transfer</span>
         <span class="upload-subtitle" id="uploadBoxSub">Klik di sini untuk ambil dari Galeri/Kamera</span>
         <div id="imagePreviewWrapper" style="display:none">
           <img id="imagePreviewElement" class="preview-img-box" src="" alt="Bukti Transfer">
         </div>
-      </div>
+      </label>
     </div>
 
     <button type="button" id="btnKirimTelegram" onclick="kirimKeBotTelegram()" class="btn btn-block btn-submit mb-2">
@@ -122,8 +123,8 @@ $(document).ready(function(){
     $('#inputTujuan').val(tujuanParam).prop('readonly', true);
   }
 
-  // BACA FOTO DENGAN BASE64 DI VERCEL (BEBAS DARI BLOKIR WEBVIEW)
-  $(document).on('change', '#fotoNativeInput', function(evt){
+  // DETEKSI PERUBAHAN INPUT FILE FOTO
+  $('#fotoNativeInput').on('change', function(evt){
     var files = evt.target.files;
     if (files && files[0]) {
       var file = files[0];
