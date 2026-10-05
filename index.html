@@ -1,363 +1,252 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" dir="ltr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload Produk ke Bukaolshop</title>
-    <style>
-        /* CSS Styling */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 30px;
-            background-color: #e0f2f7; /* Light Blue Background */
-            color: #333;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* Align to top */
-            min-height: 100vh;
-        }
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta charset="utf-8">
+<title>Laporan Kendala Produk Belum Masuk</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 12px;
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 600px;
-            box-sizing: border-box;
-            margin-top: 30px; /* Space from top */
-        }
+<style>
+:root{--primary:#5865F2;--primary-light:#6C78FF;--bg-app:#F5F3FA;--card-bg:#FFFFFF;--text-dark:#30205A;--text-muted:#887E9F;--border-color:#EDE8F5;--success:#10B981;--danger:#EF4444}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;font-family:'Lexend Deca',sans-serif!important}
+body{background-color:var(--bg-app);color:var(--text-dark);padding:20px 16px;user-select:none}
 
-        h1 {
-            color: #007bff; /* Primary Blue */
-            text-align: center;
-            margin-bottom: 30px;
-            font-size: 2.2em;
-            font-weight: 600;
-        }
+.container-card{max-width:480px;margin:0 auto;background:#FFF;border-radius:24px;padding:20px;border:1.5px solid var(--border-color);box-shadow:0 12px 32px rgba(48,32,90,0.06)}
+.header-box{text-align:center;margin-bottom:18px}
+.header-box i{font-size:38px;color:var(--primary)}
+.header-box h2{font-size:16pt;font-weight:800;color:var(--text-dark);margin-top:6px}
+.header-box p{font-size:11px;color:var(--text-muted)}
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+.form-group label{font-size:11px;font-weight:700;color:var(--text-dark);margin-bottom:6px;display:block}
+.form-control{border-radius:12px!important;border:1.5px solid var(--border-color)!important;font-size:12px!important;padding:10px 12px!important;font-weight:600;background:#F9F8FD}
+.form-control:focus{border-color:var(--primary)!important;box-shadow:none!important;background:#FFF}
+.form-control[readonly]{background:#E2E8F0!important;color:#475569!important;cursor:not-allowed}
 
-        label {
-            display: block;
-            margin-bottom: 8px;
-            font-weight: 600;
-            color: #555;
-        }
+.upload-box-container{border:2px dashed var(--primary);background:#F5F3FA;border-radius:16px;padding:18px;text-align:center;position:relative;overflow:hidden;cursor:pointer}
+.upload-icon-circle{width:44px;height:44px;background:var(--primary);color:#FFF;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:6px;font-size:20px}
+.upload-title{font-size:11.5px;font-weight:700;color:var(--text-dark);display:block}
+.upload-subtitle{font-size:10px;color:var(--text-muted);display:block}
+.preview-img-box{max-width:130px;max-height:130px;border-radius:12px;object-fit:cover;margin-top:10px;border:1px solid #CBD5E1;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.native-file-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:10}
 
-        input[type="text"],
-        input[type="number"],
-        textarea,
-        select {
-            width: 100%;
-            padding: 12px 15px;
-            border: 1px solid #cce7e8; /* Light blue border */
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-size: 1em;
-            color: #333;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
-
-        input[type="text"]:focus,
-        input[type="number"]:focus,
-        textarea:focus,
-        select:focus {
-            border-color: #007bff;
-            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.2);
-            outline: none;
-        }
-
-        input[type="file"] {
-            display: block;
-            margin-top: 10px;
-            padding: 5px;
-            border: 1px solid #cce7e8;
-            border-radius: 8px;
-            background-color: #f0f8ff;
-        }
-
-        button {
-            background-color: #28a745; /* Success Green */
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 1.1em;
-            font-weight: 600;
-            width: 100%;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.2);
-        }
-
-        button:hover {
-            background-color: #218838; /* Darker Green */
-            transform: translateY(-2px);
-        }
-
-        button:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 5px rgba(40, 167, 69, 0.3);
-        }
-
-        #responseMessage {
-            margin-top: 25px;
-            padding: 15px;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-            display: none; /* Hidden by default */
-        }
-
-        .success {
-            background-color: #d4edda; /* Light green */
-            color: #155724; /* Dark green */
-            border: 1px solid #c3e6cb;
-        }
-
-        .error {
-            background-color: #f8d7da; /* Light red */
-            color: #721c24; /* Dark red */
-            border: 1px solid #f5c6cb;
-        }
-
-        .loading {
-            background-color: #ffeeba; /* Light yellow */
-            color: #856404; /* Dark yellow */
-            border: 1px solid #ffeeba;
-        }
-
-        #tokenInputSection {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        #tokenInputSection input {
-            width: calc(100% - 22px);
-            max-width: 400px;
-            margin-bottom: 10px;
-        }
-
-        #tokenInputSection button {
-            max-width: 200px;
-            margin: auto;
-        }
-
-        #productFormSection {
-            display: none; /* Hidden by default, shown after token is valid */
-        }
-    </style>
+.btn-submit{background:linear-gradient(135deg,#229ED9 0%,#0088cc 100%);color:#FFF;font-weight:800;font-size:12.5px;padding:12px;border-radius:14px;border:none;box-shadow:0 6px 18px rgba(0,136,204,0.25)}
+.btn-wa{background:#25D366;color:#FFF;font-weight:800;font-size:12.5px;padding:12px;border-radius:14px;border:none}
+</style>
 </head>
 <body>
-    <div class="container">
-        <h1>Bukaolshop Product Uploader</h1>
 
-        <div id="tokenInputSection">
-            <h2>Masukkan API Token Anda</h2>
-            <div class="form-group">
-                <label for="apiToken">API Token Bukaolshop:</label>
-                <input type="text" id="apiToken" placeholder="Masukkan API Token Anda di sini" />
-                <small style="color: #666; font-size: 0.85em;">API Token Anda tidak akan disimpan di browser.</small>
-            </div>
-            <button id="verifyTokenBtn">Verifikasi & Lanjutkan</button>
-            <div id="responseMessageToken" class="responseMessage hidden"></div>
-        </div>
+<div class="container-card">
+  <div class="header-box">
+    <i class="bi bi-headset"></i>
+    <h2>Laporan Produk Belum Masuk</h2>
+    <p>Silakan upload foto bukti transfer/mutasi. Data transaksi Anda telah terisi secara otomatis.</p>
+  </div>
 
-        <div id="productFormSection">
-            <h2>Upload Produk Baru</h2>
+  <div class="alert p-2.5 mb-3" style="background:#FFF1F2;border:1px dashed #FDA4AF;border-radius:14px;">
+    <span class="d-block text-danger font-weight-bold" style="font-size:10px">
+      <i class="bi bi-exclamation-triangle-fill mr-1"></i>PENTING: Pastikan nomor tujuan sudah sesuai. Kesalahan nomor tujuan bukan tanggung jawab kami!
+    </span>
+  </div>
 
-            <div class="form-group">
-                <label for="productName">Nama Produk:</label>
-                <input type="text" id="productName" placeholder="Contoh: Kemeja Batik Modern" required>
-            </div>
-
-            <div class="form-group">
-                <label for="productPrice">Harga Produk (Rp):</label>
-                <input type="number" id="productPrice" placeholder="Contoh: 150000" min="1" required>
-            </div>
-
-            <div class="form-group">
-                <label for="productCategory">Kategori Produk:</label>
-                <select id="productCategory" required disabled>
-                    <option value="">Memuat kategori...</option>
-                </select>
-            </div>
-
-            <div class="form-group">
-                <label for="productDescription">Deskripsi Produk:</label>
-                <textarea id="productDescription" rows="5" placeholder="Tulis deskripsi lengkap produk Anda..." required></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="productImages">Gambar Produk (bisa lebih dari satu):</label>
-                <input type="file" id="productImages" accept="image/*" multiple required>
-            </div>
-
-            <button id="uploadProductBtn">Upload Produk Sekarang</button>
-            <div id="responseMessageUpload" class="responseMessage hidden"></div>
-        </div>
+  <form id="formLaporan">
+    <div class="form-group mb-2.5">
+      <label>Nomor Pembayaran / Transaksi</label>
+      <input type="text" id="inputNoTrx" class="form-control" placeholder="Nomor Transaksi Otomatis" required>
     </div>
 
-    <script>
-        // JavaScript Logic
-        const API_BASE_URL = 'https://bukaolshop.com/api';
+    <div class="form-group mb-2.5">
+      <label>Nama Produk</label>
+      <input type="text" id="inputNamaProduk" class="form-control" placeholder="Nama Produk Otomatis">
+    </div>
 
-        const tokenInputSection = document.getElementById('tokenInputSection');
-        const productFormSection = document.getElementById('productFormSection');
-        const apiTokenInput = document.getElementById('apiToken');
-        const verifyTokenBtn = document.getElementById('verifyTokenBtn');
-        const responseMessageTokenDiv = document.getElementById('responseMessageToken');
+    <div class="form-group mb-2.5">
+      <label>Nomor Tujuan / ID Akun</label>
+      <input type="text" id="inputTujuan" class="form-control" placeholder="Tujuan / ID Otomatis" required>
+    </div>
 
-        const productNameInput = document.getElementById('productName');
-        const productPriceInput = document.getElementById('productPrice');
-        const productCategorySelect = document.getElementById('productCategory');
-        const productDescriptionTextarea = document.getElementById('productDescription');
-        const productImagesInput = document.getElementById('productImages');
-        const uploadProductBtn = document.getElementById('uploadProductBtn');
-        const responseMessageUploadDiv = document.getElementById('responseMessageUpload');
+    <div class="form-group mb-3">
+      <label>Upload Foto Bukti Mutasi / Transfer</label>
+      <div class="upload-box-container">
+        <input type="file" id="fotoNativeInput" class="native-file-input" accept="image/*" required>
+        <div class="upload-icon-circle"><i class="bi bi-cloud-arrow-up-fill"></i></div>
+        <span class="upload-title" id="uploadBoxTitle">Pilih Foto Bukti Transfer</span>
+        <span class="upload-subtitle" id="uploadBoxSub">Klik di sini untuk ambil dari Galeri/Kamera</span>
+        <div id="imagePreviewWrapper" style="display:none">
+          <img id="imagePreviewElement" class="preview-img-box" src="" alt="Bukti Transfer">
+        </div>
+      </div>
+    </div>
 
-        let currentApiToken = ''; // Variabel untuk menyimpan token setelah diverifikasi
+    <button type="button" id="btnKirimTelegram" onclick="kirimKeBotTelegram()" class="btn btn-block btn-submit mb-2">
+      <i class="bi bi-telegram mr-2"></i> Kirim Otomatis ke Bot Telegram (<span id="sisaSektorKlik">3</span>/3)
+    </button>
 
-        // Fungsi untuk menampilkan pesan respons
-        function showResponseMessage(element, message, type) {
-            element.textContent = message;
-            element.className = 'responseMessage'; // Reset classes
-            element.classList.add(type);
-            element.style.display = 'block';
-            setTimeout(() => {
-                element.style.display = 'none';
-            }, 5000); // Pesan akan hilang setelah 5 detik
+    <a href="#" id="linkWa" target="_blank" onclick="updateLinkWa()" class="btn btn-block btn-wa text-center text-white text-decoration-none">
+      <i class="bi bi-whatsapp mr-2"></i> Kirim via WhatsApp Admin
+    </a>
+  </form>
+
+  <div id="responseAlert" class="mt-3" style="display:none"></div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<script type="text/javascript">
+const NOMOR_WA_ADMIN = "6283146531851";
+
+const BOT_CONFIG = [
+  { token: "8824576740:AAGXIdBBu7KaWjhVxYvdjy0MjZy8Hdxw6D8", chatId: "6806685142" },
+  { token: "8875654621:AAG-yPjgArMwGzuS8fOLN1nFRKjCKFzpc7A", chatId: "8026894851" }
+];
+
+var globalBase64Foto = null;
+var globalFotoName = "bukti_mutasi.jpg";
+
+$(document).ready(function(){
+  // BACA PARAMETER DARI URL VERCEL
+  const urlParams = new URLSearchParams(window.location.search);
+  const noTrxParam = urlParams.get('notrx');
+  const produkParam = urlParams.get('produk');
+  const tujuanParam = urlParams.get('tujuan');
+
+  if (noTrxParam) {
+    $('#inputNoTrx').val(noTrxParam).prop('readonly', true);
+  }
+  if (produkParam) {
+    $('#inputNamaProduk').val(produkParam).prop('readonly', true);
+  }
+  if (tujuanParam) {
+    $('#inputTujuan').val(tujuanParam).prop('readonly', true);
+  }
+
+  // BACA FOTO DENGAN BASE64 DI VERCEL (BEBAS DARI BLOKIR WEBVIEW)
+  $(document).on('change', '#fotoNativeInput', function(evt){
+    var files = evt.target.files;
+    if (files && files[0]) {
+      var file = files[0];
+      globalFotoName = file.name;
+      var reader = new FileReader();
+      reader.onload = function(e){
+        globalBase64Foto = e.target.result;
+        $('#uploadBoxTitle').text(file.name).css('color', '#10B981');
+        $('#uploadBoxSub').text('Foto tersimpan! Klik jika ingin mengganti.');
+        $('#imagePreviewElement').attr('src', e.target.result);
+        $('#imagePreviewWrapper').show();
+      };
+      reader.readAsDataURL(file);
+    }
+  });
+
+  updateIndikatorLimitUI();
+});
+
+function base64ToBlob(base64Data, contentType) {
+    contentType = contentType || '';
+    var sliceSize = 1024;
+    var byteCharacters = atob(base64Data.split(',')[1]);
+    var bytesLength = byteCharacters.length;
+    var slicesCount = Math.ceil(bytesLength / sliceSize);
+    var byteArrays = new Array(slicesCount);
+
+    for (var sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+        var begin = sliceIndex * sliceSize;
+        var end = Math.min(begin + sliceSize, bytesLength);
+
+        var bytes = new Array(end - begin);
+        for (var offset = begin, i = 0; offset < end; ++i, ++offset) {
+            bytes[i] = byteCharacters.charCodeAt(offset);
         }
+        byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+    return new Blob(byteArrays, { type: contentType });
+}
 
-        // Fungsi untuk mengambil kategori produk dari API
-        async function fetchProductCategories() {
-            productCategorySelect.innerHTML = '<option value="">Memuat kategori...</option>';
-            productCategorySelect.disabled = true; // Nonaktifkan selama memuat
+function getSisaKlikLimit(noTrx) {
+  if(!noTrx) return 0;
+  let count = localStorage.getItem("limit_laporan_" + noTrx);
+  return count ? parseInt(count) : 0;
+}
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/products/categories`, {
-                    method: 'GET',
-                    headers: {
-                        'Authorization': `Bearer ${currentApiToken}`
-                    }
-                });
+function updateIndikatorLimitUI() {
+  let noTrx = $('#inputNoTrx').val().trim() || "DEFAULT";
+  let used = getSisaKlikLimit(noTrx);
+  let sisa = 3 - used;
+  if(sisa < 0) sisa = 0;
+  $('#sisaSektorKlik').text(sisa);
 
-                const result = await response.json();
+  if (used >= 3) {
+    $('#btnKirimTelegram').prop('disabled', true).css({'opacity':'0.6', 'cursor':'not-allowed'}).html('<i class="bi bi-slash-circle mr-2"></i> Batas Pengiriman Habis (3/3)');
+  } else {
+    $('#btnKirimTelegram').prop('disabled', false).css({'opacity':'1', 'cursor':'pointer'}).html('<i class="bi bi-telegram mr-2"></i> Kirim Otomatis ke Bot Telegram ('+sisa+'/3)');
+  }
+}
 
-                if (response.ok && result.data && Array.isArray(result.data)) {
-                    productCategorySelect.innerHTML = '<option value="">Pilih Kategori</option>'; // Reset
-                    result.data.forEach(category => {
-                        const option = document.createElement('option');
-                        option.value = category.category_id; // Asumsi API mengembalikan category_id
-                        option.textContent = category.category_name; // Asumsi API mengembalikan category_name
-                        productCategorySelect.appendChild(option);
-                    });
-                    productCategorySelect.disabled = false; // Aktifkan kembali
-                    return true; // Berhasil mengambil kategori
-                } else {
-                    const errorMessage = result.message || 'Gagal memuat kategori produk. Periksa API Token.';
-                    showResponseMessage(responseMessageTokenDiv, `Error: ${errorMessage}`, 'error');
-                    console.error('Failed to fetch categories:', result);
-                    return false; // Gagal mengambil kategori
-                }
-            } catch (error) {
-                console.error('Network error while fetching categories:', error);
-                showResponseMessage(responseMessageTokenDiv, 'Kesalahan jaringan saat memuat kategori. Pastikan token benar dan koneksi internet stabil.', 'error');
-                return false; // Gagal mengambil kategori
-            }
-        }
+$('#inputNoTrx').on('input', function(){
+  updateIndikatorLimitUI();
+});
 
-        // Event listener untuk tombol Verifikasi Token
-        verifyTokenBtn.addEventListener('click', async () => {
-            const token = apiTokenInput.value.trim();
-            if (!token) {
-                showResponseMessage(responseMessageTokenDiv, 'Mohon masukkan API Token Anda.', 'error');
-                return;
-            }
+function updateLinkWa(){
+  let noTrx = $('#inputNoTrx').val().trim();
+  let produk = $('#inputNamaProduk').val().trim() || "-";
+  let tujuan = $('#inputTujuan').val().trim() || "-";
+  let pesan = `Halo Admin, transaksi #${noTrx} (${produk}) status Selesai tapi produk belum masuk ke ID: ${tujuan}. Mohon dicheck.`;
+  $('#linkWa').attr('href', `https://wa.me/${NOMOR_WA_ADMIN}?text=${encodeURIComponent(pesan)}`);
+}
 
-            currentApiToken = token; // Simpan token sementara
+async function kirimKeBotTelegram() {
+  let noTrx = $('#inputNoTrx').val().trim();
+  let produk = $('#inputNamaProduk').val().trim() || "-";
+  let tujuan = $('#inputTujuan').val().trim() || "-";
 
-            showResponseMessage(responseMessageTokenDiv, 'Memverifikasi token & memuat kategori...', 'loading');
-            verifyTokenBtn.disabled = true;
+  if(!noTrx || !tujuan) {
+    alert("Harap isi Nomor Pembayaran dan Nomor Tujuan!");
+    return;
+  }
 
-            const categoriesLoaded = await fetchProductCategories();
+  let used = getSisaKlikLimit(noTrx);
+  if (used >= 3) {
+    alert("Anda telah mencapai batas maksimal 3 kali pengiriman laporan untuk nomor transaksi ini!");
+    return;
+  }
 
-            if (categoriesLoaded) {
-                showResponseMessage(responseMessageTokenDiv, 'API Token berhasil diverifikasi dan kategori dimuat!', 'success');
-                tokenInputSection.style.display = 'none'; // Sembunyikan bagian token
-                productFormSection.style.display = 'block'; // Tampilkan bagian form upload
-            } else {
-                // Jika gagal, biarkan pesan error dari fetchProductCategories yang tampil
-                verifyTokenBtn.disabled = false;
-            }
-        });
+  if(!globalBase64Foto) {
+    alert("Harap unggah foto bukti transfer/mutasi terlebih dahulu!");
+    return;
+  }
 
-        // Event listener untuk tombol upload produk
-        uploadProductBtn.addEventListener('click', async () => {
-            const productName = productNameInput.value.trim();
-            const productPrice = productPriceInput.value;
-            const productCategory = productCategorySelect.value;
-            const productDescription = productDescriptionTextarea.value.trim();
-            const productImages = productImagesInput.files;
+  let btn = $("#btnKirimTelegram");
+  btn.prop("disabled", true).html('<span class="spinner-border spinner-border-sm mr-2" role="status"></span>Mengirim Laporan...');
 
-            // Validasi input form produk
-            if (!productName || !productPrice || !productCategory || !productDescription || productImages.length === 0) {
-                showResponseMessage(responseMessageUploadDiv, 'Harap lengkapi semua bidang dan pilih setidaknya satu gambar produk.', 'error');
-                return;
-            }
-            if (isNaN(productPrice) || parseFloat(productPrice) <= 0) {
-                showResponseMessage(responseMessageUploadDiv, 'Harga produk harus angka positif.', 'error');
-                return;
-            }
+  let captionPesan = `⚠️ LAPORAN PRODUK BELUM MASUK\n\nNomor Trx: #${noTrx}\nProduk: ${produk}\nTujuan / ID: ${tujuan}\nCatatan: Pelanggan melampirkan foto bukti transfer/mutasi.`;
 
-            showResponseMessage(responseMessageUploadDiv, 'Mengunggah produk...', 'loading');
-            uploadProductBtn.disabled = true;
+  try {
+    for (let bot of BOT_CONFIG) {
+      if (!bot.token) continue;
 
-            const formData = new FormData();
-            formData.append('product_name', productName);
-            formData.append('product_price', parseFloat(productPrice));
-            formData.append('product_category', productCategory);
-            formData.append('product_description', productDescription);
+      let formData = new FormData();
+      formData.append("chat_id", bot.chatId);
+      
+      let mimeType = globalBase64Foto.split(';')[0].split(':')[1];
+      let fotoBlob = base64ToBlob(globalBase64Foto, mimeType);
+      formData.append("photo", fotoBlob, globalFotoName);
+      formData.append("caption", captionPesan);
 
-            for (let i = 0; i < productImages.length; i++) {
-                formData.append('product_image[]', productImages[i]);
-            }
+      await fetch(`https://api.telegram.org/bot${bot.token}/sendPhoto`, { method: "POST", body: formData });
+    }
 
-            try {
-                const response = await fetch(`${API_BASE_URL}/products/upload`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${currentApiToken}`
-                    },
-                    body: formData
-                });
+    let nextCount = used + 1;
+    localStorage.setItem("limit_laporan_" + noTrx, nextCount);
 
-                const result = await response.json();
-
-                if (response.ok) {
-                    showResponseMessage(responseMessageUploadDiv, `Produk berhasil diunggah! ID Produk: ${result.data.product_id}`, 'success');
-                    // Bersihkan form setelah sukses
-                    productNameInput.value = '';
-                    productPriceInput.value = '';
-                    productCategorySelect.value = ''; // Reset kategori
-                    productDescriptionTextarea.value = '';
-                    productImagesInput.value = '';
-                } else {
-                    const errorMessage = result.message || 'Terjadi kesalahan saat mengunggah produk.';
-                    showResponseMessage(responseMessageUploadDiv, `Gagal mengunggah: ${errorMessage}`, 'error');
-                    console.error('Upload Error:', result);
-                }
-            } catch (error) {
-                console.error('Network error during upload:', error);
-                showResponseMessage(responseMessageUploadDiv, 'Terjadi kesalahan jaringan atau server tidak merespons.', 'error');
-            } finally {
-                uploadProductBtn.disabled = false;
-            }
-        });
-    </script>
+    $("#responseAlert").removeClass("alert-danger").addClass("alert alert-success").html('<i class="bi bi-check-circle-fill mr-1"></i> Laporan berhasil dikirimkan ke Bot Telegram!').show();
+  } catch (e) {
+    $("#responseAlert").removeClass("alert-success").addClass("alert alert-danger").html('<i class="bi bi-exclamation-triangle-fill mr-1"></i> Gagal mengirim ke Bot Telegram. Coba gunakan tombol WhatsApp.').show();
+  } finally {
+    updateIndikatorLimitUI();
+  }
+}
+</script>
 </body>
 </html>
