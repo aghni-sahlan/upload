@@ -3,7 +3,7 @@
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta charset="utf-8">
-<title>Kembali</title>
+<title>Laporan Kendala Produk Belum Masuk</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Lexend+Deca:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -26,12 +26,12 @@ body{background-color:var(--bg-app);color:var(--text-dark);padding:20px 16px;use
 .form-control:focus{border-color:var(--primary)!important;box-shadow:none!important;background:#FFF}
 .form-control[readonly]{background:#E2E8F0!important;color:#475569!important;cursor:not-allowed}
 
-/* FIX TRIGGER UPLOAD BROWSER */
-.upload-btn-label{display:block;border:2px dashed var(--primary);background:#F5F3FA;border-radius:16px;padding:18px;text-align:center;cursor:pointer;margin-bottom:0}
+.upload-box-container{border:2px dashed var(--primary);background:#F5F3FA;border-radius:16px;padding:18px;text-align:center;position:relative;overflow:hidden;cursor:pointer}
 .upload-icon-circle{width:44px;height:44px;background:var(--primary);color:#FFF;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;margin-bottom:6px;font-size:20px}
 .upload-title{font-size:11.5px;font-weight:700;color:var(--text-dark);display:block}
 .upload-subtitle{font-size:10px;color:var(--text-muted);display:block}
 .preview-img-box{max-width:130px;max-height:130px;border-radius:12px;object-fit:cover;margin-top:10px;border:1px solid #CBD5E1;box-shadow:0 4px 12px rgba(0,0,0,0.1)}
+.native-file-input{position:absolute;top:0;left:0;width:100%;height:100%;opacity:0;cursor:pointer;z-index:10}
 
 .btn-submit{background:linear-gradient(135deg,#229ED9 0%,#0088cc 100%);color:#FFF;font-weight:800;font-size:12.5px;padding:12px;border-radius:14px;border:none;box-shadow:0 6px 18px rgba(0,136,204,0.25)}
 .btn-wa{background:#25D366;color:#FFF;font-weight:800;font-size:12.5px;padding:12px;border-radius:14px;border:none}
@@ -70,16 +70,15 @@ body{background-color:var(--bg-app);color:var(--text-dark);padding:20px 16px;use
 
     <div class="form-group mb-3">
       <label>Upload Foto Bukti Mutasi / Transfer</label>
-      <!-- GUNAKAN INPUT HIDDEN DENGAN LABEL UNTUK MEMAKSA BROWSER BUKA GALERI/KAMERA -->
-      <input type="file" id="fotoNativeInput" accept="image/*" style="display:none!important">
-      <label for="fotoNativeInput" class="upload-btn-label">
+      <div class="upload-box-container">
+        <input type="file" id="fotoNativeInput" class="native-file-input" accept="image/*" required>
         <div class="upload-icon-circle"><i class="bi bi-cloud-arrow-up-fill"></i></div>
         <span class="upload-title" id="uploadBoxTitle">Pilih Foto Bukti Transfer</span>
         <span class="upload-subtitle" id="uploadBoxSub">Klik di sini untuk ambil dari Galeri/Kamera</span>
         <div id="imagePreviewWrapper" style="display:none">
           <img id="imagePreviewElement" class="preview-img-box" src="" alt="Bukti Transfer">
         </div>
-      </label>
+      </div>
     </div>
 
     <button type="button" id="btnKirimTelegram" onclick="kirimKeBotTelegram()" class="btn btn-block btn-submit mb-2">
@@ -96,18 +95,17 @@ body{background-color:var(--bg-app);color:var(--text-dark);padding:20px 16px;use
 
 <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
 <script type="text/javascript">
-const NOMOR_WA_ADMIN = "6283146531851";
-
+// MASUKKAN BOT TOKEN & CHAT ID TELEGRAM ADMIN DI SINI
 const BOT_CONFIG = [
-  { token: "8824576740:AAGXIdBBu7KaWjhVxYvdjy0MjZy8Hdxw6D8", chatId: "6806685142" },
-  { token: "8875654621:AAG-yPjgArMwGzuS8fOLN1nFRKjCKFzpc7A", chatId: "8026894851" }
+  { token: "BOT_TOKEN_1", chatId: "CHAT_ID_1" },
+  { token: "BOT_TOKEN_2", chatId: "CHAT_ID_2" }
 ];
 
 var globalBase64Foto = null;
 var globalFotoName = "bukti_mutasi.jpg";
 
 $(document).ready(function(){
-  // BACA PARAMETER DARI URL VERCEL
+  // MEMBACA DENGAN PRESISI PARAMETER URL DARI WEBSITE EXTERNAL
   const urlParams = new URLSearchParams(window.location.search);
   const noTrxParam = urlParams.get('notrx');
   const produkParam = urlParams.get('produk');
@@ -123,8 +121,8 @@ $(document).ready(function(){
     $('#inputTujuan').val(tujuanParam).prop('readonly', true);
   }
 
-  // DETEKSI PERUBAHAN INPUT FILE FOTO
-  $('#fotoNativeInput').on('change', function(evt){
+  // BACA FILE LANGSUNG DARI WEBBROWSER
+  $(document).on('change', '#fotoNativeInput', function(evt){
     var files = evt.target.files;
     if (files && files[0]) {
       var file = files[0];
@@ -194,7 +192,7 @@ function updateLinkWa(){
   let produk = $('#inputNamaProduk').val().trim() || "-";
   let tujuan = $('#inputTujuan').val().trim() || "-";
   let pesan = `Halo Admin, transaksi #${noTrx} (${produk}) status Selesai tapi produk belum masuk ke ID: ${tujuan}. Mohon dicheck.`;
-  $('#linkWa').attr('href', `https://wa.me/${NOMOR_WA_ADMIN}?text=${encodeURIComponent(pesan)}`);
+  $('#linkWa').attr('href', `https://wa.me/628123456789?text=${encodeURIComponent(pesan)}`);
 }
 
 async function kirimKeBotTelegram() {
@@ -225,7 +223,7 @@ async function kirimKeBotTelegram() {
 
   try {
     for (let bot of BOT_CONFIG) {
-      if (!bot.token) continue;
+      if (!bot.token || bot.token.includes("BOT_TOKEN")) continue;
 
       let formData = new FormData();
       formData.append("chat_id", bot.chatId);
